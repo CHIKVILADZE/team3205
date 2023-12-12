@@ -1,9 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const { param, query, validationResult } = require('express-validator');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 
+app.use(bodyParser.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
+
+const dataPath = 'data.json';
+let rawData = fs.readFileSync(dataPath);
+let users = JSON.parse(rawData);
 
 app.get(
   '/search/:email',
