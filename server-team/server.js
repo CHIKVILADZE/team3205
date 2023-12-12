@@ -1,0 +1,42 @@
+const express = require('express');
+const cors = require('cors');
+const app = express();
+const fs = require('fs');
+
+app.use(cors({ origin: 'http://localhost:3000' }));
+
+app.get(
+  '/search/:email',
+
+  (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const errorMessage = errors.array()[0].msg;
+      return res.status(400).json({ error: errorMessage });
+    }
+
+    const { email } = req.params;
+    const { number } = req.query;
+
+    let results = users.filter(
+      (user) => user.email.toLowerCase() === email.toLowerCase()
+    );
+
+    // If number is provided, filter further by number
+    if (number) {
+      results = results.filter((user) => user.number === number);
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'There is no such user' });
+    }
+
+    res.json(results);
+  }
+);
+
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
