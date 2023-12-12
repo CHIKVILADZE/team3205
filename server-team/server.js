@@ -13,22 +13,19 @@ let rawData = fs.readFileSync(dataPath);
 let users = JSON.parse(rawData);
 
 app.get(
-  '/search/:email',
+  '/search',
   [
-    // Validate email (required and email format)
-    param('email')
+    query('email')
       .notEmpty()
       .withMessage('Email is required.')
       .isEmail()
       .withMessage('Please provide a valid email address'),
 
-    // Optionally validate number (if provided and numeric)
     query('number')
       .optional()
       .isNumeric()
       .withMessage('Number should be numeric'),
   ],
-
   (req, res) => {
     const errors = validationResult(req);
 
@@ -37,14 +34,12 @@ app.get(
       return res.status(400).json({ error: errorMessage });
     }
 
-    const { email } = req.params;
-    const { number } = req.query;
+    const { email, number } = req.query;
 
     let results = users.filter(
       (user) => user.email.toLowerCase() === email.toLowerCase()
     );
 
-    // If number is provided, filter further by number
     if (number) {
       results = results.filter((user) => user.number === number);
     }
