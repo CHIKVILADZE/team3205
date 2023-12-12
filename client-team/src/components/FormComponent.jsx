@@ -13,24 +13,29 @@ function FormComponent() {
 
   const [email, setEmail] = useState('');
   const [number, setNumber] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const onSubmit = (data) => {
     console.log(data);
 
-    // Perform a GET request using Axios
+    const requestData = {
+      email: data.email,
+      ...(data.number && { number: data.number }),
+    };
+
     axios
-      .get(
-        `http://localhost:5000/search/${data.email}?number=${data.number || ''}`
-      )
+      .get(`http://localhost:5000/search`, {
+        params: requestData,
+      })
       .then((response) => {
-        console.log('GET request response:', response.data);
-        // Use response data to update email and number states
-        setEmail(response.data.email || '');
-        setNumber(response.data.number || '');
+        console.log('GET request responsessssss:', response.data);
+        if (response.data) {
+          setErrorMessage('');
+        }
       })
       .catch((error) => {
-        console.error('Error making GET request:', error);
-        // Handle errors here
+        console.error('Error making GET request:', error.response.data.error);
+        setErrorMessage(error.response.data.error);
       });
   };
 
@@ -41,6 +46,7 @@ function FormComponent() {
     >
       <h1>FormComponent</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {errorMessage && <h3 className="text-danger">{errorMessage}</h3>}
         <div className="mb-3">
           <label htmlFor="emailInput" className="form-label">
             Email address
@@ -51,8 +57,6 @@ function FormComponent() {
             placeholder="name@example.com"
             {...register('email', { required: true })}
             style={{ width: '300px' }}
-            value={email} // Controlled input value
-            onChange={(e) => setEmail(e.target.value)} // Update state on change
           />
           {errors.email && <p style={{ color: 'red' }}>Email is required.</p>}
         </div>
@@ -69,8 +73,6 @@ function FormComponent() {
             placeholder="Enter a number"
             {...register('number', { pattern: /^\d{6}$/ })}
             style={{ width: '300px' }}
-            value={number} // Controlled input value
-            onChange={(e) => setNumber(e.target.value)} // Update state on change
           />
           {errors.number && (
             <p style={{ color: 'red' }}>Number should be exactly 6 digits.</p>
