@@ -7,6 +7,20 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.get(
   '/search/:email',
+  [
+    // Validate email (required and email format)
+    param('email')
+      .notEmpty()
+      .withMessage('Email is required.')
+      .isEmail()
+      .withMessage('Please provide a valid email address'),
+
+    // Optionally validate number (if provided and numeric)
+    query('number')
+      .optional()
+      .isNumeric()
+      .withMessage('Number should be numeric'),
+  ],
 
   (req, res) => {
     const errors = validationResult(req);
