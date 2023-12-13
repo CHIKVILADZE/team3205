@@ -3,12 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function TableComponent({ users }) {
   return (
-    <div className="table">
-      <table className="table table-bordered table-hover ">
-        <thead className="thead-warning">
+    <div className="container">
+      <table className="table table-striped table-bordered table-hover">
+        <thead className="thead-dark">
           <tr>
-            <th>Email</th>
-            <th>Number</th>
+            <th scope="col">Email</th>
+            <th scope="col">Number</th>
           </tr>
         </thead>
         <tbody>

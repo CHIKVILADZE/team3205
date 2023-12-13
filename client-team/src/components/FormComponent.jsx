@@ -13,33 +13,35 @@ function FormComponent() {
   } = useForm();
 
   const [users, setUsers] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const onSubmit = (data) => {
-    console.log(data);
+    setLoading(true);
 
     const requestData = {
       email: data.email,
       ...(data.number && { number: data.number }),
     };
 
-    axios
-      .get(`http://localhost:5000/search`, {
-        params: requestData,
-      })
-      .then((response) => {
-        console.log('GET request response:', response.data);
-        setUsers(response.data);
-
-        if (response.data) {
+    setTimeout(() => {
+      axios
+        .get(`http://localhost:5000/search`, {
+          params: requestData,
+        })
+        .then((response) => {
+          console.log('GET request response:', response.data);
+          setUsers(response.data);
           setErrorMessage('');
-        }
-      })
-      .catch((error) => {
-        console.error('Error making GET request:', error.response.data.error);
-        setErrorMessage(error.response.data.error);
-      });
+        })
+        .catch((error) => {
+          console.error('Error making GET request:', error.response.data.error);
+          setErrorMessage(error.response.data.error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 5000);
   };
 
   return (
@@ -88,7 +90,7 @@ function FormComponent() {
         </form>
       </div>
       <div style={{ width: '400px' }} className="mt-4">
-        <TableComponent users={users} />
+        {loading ? <p>Loading...</p> : <TableComponent users={users} />}
       </div>
     </div>
   );
