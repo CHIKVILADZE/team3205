@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const { param, query, validationResult } = require('express-validator');
+const { query, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
@@ -23,8 +23,8 @@ app.get(
 
     query('number')
       .optional()
-      .isNumeric()
-      .withMessage('Number should be numeric'),
+      .matches(/^\d{2}-\d{2}-\d{2}$/)
+      .withMessage('Number should be in the format XX-XX-XX'),
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -41,7 +41,9 @@ app.get(
     );
 
     if (number) {
-      results = results.filter((user) => user.number === number);
+      const formattedNumber = number.replace(/-/g, '');
+
+      results = results.filter((user) => user.number === formattedNumber);
     }
 
     if (results.length === 0) {
