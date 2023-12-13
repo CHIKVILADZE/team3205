@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import axios from 'axios';
 import TableComponent from './TableComponent';
+import InputMask from 'react-input-mask';
 
 function FormComponent() {
   const {
@@ -70,14 +71,14 @@ function FormComponent() {
             <label htmlFor="numberInput" className="form-label">
               Number (Optional)
             </label>
-            <input
-              type="text"
+            <InputMask
+              mask="99-99-99"
+              maskChar="_"
               className={`form-control no-arrow ${
                 errors.number ? 'is-invalid' : ''
               }`}
-              id="numberInput"
               placeholder="Enter a number"
-              {...register('number', { pattern: /^\d{6}$/ })}
+              {...register('number')}
               style={{ width: '300px' }}
             />
             {errors.number && (

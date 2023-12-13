@@ -2,6 +2,10 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function TableComponent({ users }) {
+  const formatNumber = (number) => {
+    return number.match(/.{1,2}/g).join('-');
+  };
+
   return (
     <div className="container">
       <table className="table table-striped table-bordered table-hover">
@@ -15,7 +19,7 @@ function TableComponent({ users }) {
           {users.map((user, index) => (
             <tr key={index}>
               <td>{user.email}</td>
-              <td>{user.number}</td>
+              <td>{formatNumber(user.number)}</td>
             </tr>
           ))}
         </tbody>
